@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=QuantumChaos
+GenericName=Notes
+Comment=Notes that sync with your own server
+Exec=quantumchaos
+Icon=io.github.chandandasgit.QuantumChaos
+Terminal=false
+Categories=Utility;
+Keywords=notes;checklist;keep;
+StartupWMClass=QuantumChaos
