@@ -11,6 +11,10 @@ NotesWrap::NotesWrap(const QString& dataFolder, const crypto::Key& key, const QS
       m_syncAddress(syncAddress)
 {
     m_library.list().onChanged = [this] { emit changed(); };
+    m_library.onRemoteChanged = [this](const std::string& id, NoteLibrary::RemoteChange change) {
+        emit remoteChanged(QString::fromStdString(id), change.title, change.content);
+    };
+    m_library.onRemoteRemoved = [this](const std::string& id) { emit remoteRemoved(QString::fromStdString(id)); };
     m_sync.onStatusChanged = [this] { emit syncChanged(); };
     m_sync.start(syncAddress.toStdString(), syncToken.toStdString());
 }

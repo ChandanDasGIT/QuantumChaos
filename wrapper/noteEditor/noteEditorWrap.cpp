@@ -22,6 +22,17 @@ NoteEditorWrap::NoteEditorWrap(NotesWrap& notes, QObject* parent) : QObject(pare
     s_instance = this;
     connect(&notes, &NotesWrap::changed, this, &NoteEditorWrap::noteChanged);
     connect(&notes, &NotesWrap::changed, this, &NoteEditorWrap::labelChoicesChanged);
+    connect(&notes, &NotesWrap::remoteChanged, this, [this](const QString& id, bool title, bool content) {
+        if (id.toStdString() != m_id) return;
+        if (title) emit titleReplaced();
+        if (content) {
+            emit bodyReplaced();
+            emit itemsChanged();
+        }
+    });
+    connect(&notes, &NotesWrap::remoteRemoved, this, [this](const QString& id) {
+        if (id.toStdString() == m_id) emit noteRemoved();
+    });
 }
 
 NoteEditorWrap* NoteEditorWrap::create(QQmlEngine*, QJSEngine*)

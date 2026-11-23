@@ -23,14 +23,22 @@ NoteLibrary::NoteLibrary(std::filesystem::path folder, const crypto::Key& key, n
 
 void NoteLibrary::applyRemote(const Note& note)
 {
+    RemoteChange change{true, true};
+    if (const Note* before = m_list.find(note.id)) {
+        change.title = before->title != note.title;
+        change.content = before->body != note.body || before->checklist != note.checklist || before->items != note.items;
+    }
     saved(m_store.save(note));
     m_list.put(note);
+    if (onRemoteChanged && (change.title || change.content)) onRemoteChanged(note.id, change);
 }
 
 void NoteLibrary::removeRemote(const std::string& id)
 {
+    const bool had = m_list.find(id) != nullptr;
     saved(m_store.remove(id));
     m_list.drop(id);
+    if (had && onRemoteRemoved) onRemoteRemoved(id);
 }
 
 void NoteLibrary::saved(bool ok)

@@ -71,3 +71,36 @@ TEST(notelibrary, a_failed_write_is_reported)
     library.list().create(false);
     CHECK(library.saveFailed());
 }
+
+TEST(notelibrary, changes_from_another_device_say_what_to_read_again)
+{
+    testkit::TempFolder dir;
+    NoteLibrary library(dir.path(), key, testClock);
+    const std::string id = library.list().create(false);
+    library.list().setTitle(id, "t");
+    library.list().setBody(id, "b");
+    std::vector<std::pair<bool, bool>> changes;
+    std::vector<std::string> removed;
+    library.onRemoteChanged = [&](const std::string&, NoteLibrary::RemoteChange c) { changes.push_back({c.title, c.content}); };
+    library.onRemoteRemoved = [&](const std::string& gone) { removed.push_back(gone); };
+
+    Note remote = *library.list().find(id);
+    remote.title = "new title";
+    library.applyRemote(remote);
+    remote.body = "new body";
+    library.applyRemote(remote);
+    remote.color = 3;                                                   // nothing to read again
+    library.applyRemote(remote);
+    remote.checklist = true;
+    remote.items = {{"line", false}};
+    library.applyRemote(remote);
+    library.removeRemote(id);
+    library.removeRemote(id);                                           // already gone: no second report
+
+    CHECK_EQ(changes.size(), std::size_t(3));
+    CHECK(changes[0] == std::make_pair(true, false));
+    CHECK(changes[1] == std::make_pair(false, true));
+    CHECK(changes[2] == std::make_pair(false, true));
+    CHECK(removed == std::vector<std::string>({id}));
+    CHECK(library.list().find(id) == nullptr);
+}

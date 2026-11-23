@@ -34,6 +34,9 @@ public:
 signals:
     void changed();
     void syncChanged();
+    // Another device changed note `id` (its title and / or its text or checklist), or deleted it.
+    void remoteChanged(const QString& id, bool title, bool content);
+    void remoteRemoved(const QString& id);
 
 private:
     NoteLibrary m_library;

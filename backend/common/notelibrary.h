@@ -34,6 +34,15 @@ public:
     std::function<void(const std::string& id)> onEdited;
     std::function<void(const std::string& id)> onErased;
 
+    // A change from another device reached note `id`: which of its text a screen showing it has to
+    // read again (colour, pin and labels are read again anyway). Or the note was deleted there.
+    struct RemoteChange {
+        bool title = false;
+        bool content = false;       // the text, or the checklist
+    };
+    std::function<void(const std::string& id, RemoteChange change)> onRemoteChanged;
+    std::function<void(const std::string& id)> onRemoteRemoved;
+
 private:
     void saved(bool ok);
 

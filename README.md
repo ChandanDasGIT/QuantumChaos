@@ -9,7 +9,8 @@ interface and a pure C++ backend.
 - Every note is stored **encrypted** (XChaCha20-Poly1305, Monocypher) with a key that is built
   into your own copy of the app
 - Optional **sync** with your own server: notes travel and are stored there encrypted, edits made
-  on two devices are merged part by part, and changes from your other devices show up at once
+  on two devices are merged part by part, and changes from your other devices show up at once,
+  even in a note you have open
 - Light and dark themes; a phone layout
 
 ## The note key

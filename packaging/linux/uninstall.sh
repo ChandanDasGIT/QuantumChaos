@@ -19,8 +19,8 @@ done
 if command -v update-desktop-database > /dev/null && [ -d "$prefix/share/applications" ]; then
     update-desktop-database -q "$prefix/share/applications" || true
 fi
-if command -v gtk-update-icon-cache > /dev/null && [ -d "$prefix/share/icons/hicolor" ]; then
-    gtk-update-icon-cache -q -t "$prefix/share/icons/hicolor" || true
+if command -v gtk-update-icon-cache > /dev/null && [ -f "$prefix/share/icons/hicolor/index.theme" ]; then
+    gtk-update-icon-cache -q "$prefix/share/icons/hicolor" || true
 fi
 
 echo "QuantumChaos is uninstalled. Your notes are still in ~/.local/share/QuantumChaos."

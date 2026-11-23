@@ -69,12 +69,25 @@ Popup {
         border.color: Theme.cardBorder
     }
 
+    // The note changed on another device while it is open: read it again, the cursor staying where it was.
     Connections {
         target: NoteEditorWrap
+        function onTitleReplaced() {
+            const cursor = titleField.cursorPosition
+            editor.loading = true
+            titleField.text = NoteEditorWrap.title
+            editor.loading = false
+            titleField.cursorPosition = cursor
+        }
         function onBodyReplaced() {
+            const cursor = bodyField.cursorPosition
             editor.loading = true
             bodyField.text = NoteEditorWrap.body
             editor.loading = false
+            bodyField.cursorPosition = cursor
+        }
+        function onNoteRemoved() {
+            editor.close()
         }
     }
 

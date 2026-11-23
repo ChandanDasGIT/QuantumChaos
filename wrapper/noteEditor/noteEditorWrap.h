@@ -93,7 +93,12 @@ signals:
     void opened();
     void noteChanged();
     void itemsChanged();
+    // The editor reads the title / the text again: another device changed it, or the text became
+    // a checklist or back.
+    void titleReplaced();
     void bodyReplaced();
+    // The open note was deleted for good on another device.
+    void noteRemoved();
     void labelChoicesChanged();
 
 private:

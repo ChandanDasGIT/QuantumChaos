@@ -38,8 +38,9 @@ install -Dm644 "$entry" "$prefix/share/applications/$id.desktop"
 if command -v update-desktop-database > /dev/null; then
     update-desktop-database -q "$prefix/share/applications" || true
 fi
-if command -v gtk-update-icon-cache > /dev/null; then
-    gtk-update-icon-cache -q -t "$prefix/share/icons/hicolor" || true
+# Only a folder with a theme index gets a cache (without one the tool fails and leaves a stray file).
+if command -v gtk-update-icon-cache > /dev/null && [ -f "$prefix/share/icons/hicolor/index.theme" ]; then
+    gtk-update-icon-cache -q "$prefix/share/icons/hicolor" || true
 fi
 
 echo "Installed. Start it from your launcher (QuantumChaos) or run $prefix/bin/quantumchaos"
